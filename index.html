@@ -286,7 +286,7 @@
     <section id="contact">
         <div class="container">
             <h2>Contact Us</h2>
-            <form id="contactForm">
+            <form id="contactForm" action="https://formspree.io/f/mblkqyrn" method="POST">
                 <input type="text" name="name" placeholder="Your Name" required>
                 <input type="email" name="email" placeholder="Your Email" required>
                 <textarea name="message" placeholder="Your Message" required></textarea>
@@ -363,6 +363,7 @@ document.getElementById("contactForm").addEventListener("submit", async function
         alert("Error sending message. Please try again.");
     }
 });
+        
 </script>
 
     <script src="scripts/main.js"></script>
