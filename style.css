@@ -927,3 +927,8 @@ body {
         align-items: center;
     }
 }
+
+.navbar-links {
+    flex-direction: row !important;
+    flex-wrap: wrap; /* optional: wrap to next line on very small screens */
+}
