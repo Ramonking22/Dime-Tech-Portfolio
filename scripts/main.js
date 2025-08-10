@@ -1,31 +1,23 @@
-// This file contains JavaScript code for interactivity on the site, such as handling form submissions, smooth scrolling for navigation, and any dynamic content updates.
-
-document.addEventListener('DOMContentLoaded', function() {
+// JavaScript for site interactivity: smooth scrolling, slider, gallery modal, and contact form
+document.addEventListener('DOMContentLoaded', function () {
+    // -------------------------
     // Smooth scrolling for navigation links
+    // -------------------------
     const links = document.querySelectorAll('a[href^="#"]');
     links.forEach(link => {
-        link.addEventListener('click', function(e) {
+        link.addEventListener('click', function (e) {
             e.preventDefault();
             const targetId = this.getAttribute('href');
             const targetElement = document.querySelector(targetId);
-            targetElement.scrollIntoView({ behavior: 'smooth' });
+            if (targetElement) {
+                targetElement.scrollIntoView({ behavior: 'smooth' });
+            }
         });
     });
 
-    // Handle form submission
-    const form = document.querySelector('form');
-    if (form) {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const formData = new FormData(form);
-            // Here you can handle the form data, e.g., send it to a server
-            alert('Thank you for your submission! We will get back to you soon.');
-            form.reset(); // Reset the form after submission
-        });
-    }
-
-    // Dynamic content updates can be added here
-
+    // -------------------------
+    // Slider functionality
+    // -------------------------
     const slidesRow = document.querySelector('.slides-row');
     const slides = document.querySelectorAll('.slide');
     const prevBtn = document.querySelector('.slider-btn.prev');
@@ -34,69 +26,90 @@ document.addEventListener('DOMContentLoaded', function() {
     const visibleSlides = 2.5; // Show 2 and a half slides
 
     function updateSlider() {
-        const slideWidth = slides[0].offsetWidth + parseInt(getComputedStyle(slides[0]).marginRight);
-        slidesRow.style.transform = `translateX(-${current * slideWidth}px)`;
+        if (slides.length > 0) {
+            const slideWidth = slides[0].offsetWidth + parseInt(getComputedStyle(slides[0]).marginRight);
+            slidesRow.style.transform = `translateX(-${current * slideWidth}px)`;
+        }
     }
 
-    prevBtn.addEventListener('click', () => {
-        if (current > 0) current--;
+    if (prevBtn && nextBtn && slides.length > 0) {
+        prevBtn.addEventListener('click', () => {
+            if (current > 0) current--;
+            updateSlider();
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (current < slides.length - visibleSlides) current++;
+            updateSlider();
+        });
+
+        window.addEventListener('resize', updateSlider);
         updateSlider();
-    });
+    }
 
-    nextBtn.addEventListener('click', () => {
-        if (current < slides.length - visibleSlides) current++;
-        updateSlider();
-    });
-
-    window.addEventListener('resize', updateSlider);
-    updateSlider();
-
-    // Gallery modal logic
+    // -------------------------
+    // Gallery modal
+    // -------------------------
     const galleryImages = document.querySelectorAll('.gallery-img');
     const modal = document.getElementById('gallery-modal');
     const modalImg = document.getElementById('gallery-modal-img');
     const modalCaption = document.getElementById('gallery-modal-caption');
     const closeBtn = document.getElementById('gallery-close');
 
-    galleryImages.forEach(img => {
-        img.addEventListener('click', function() {
-            modal.style.display = "flex";
-            modalImg.src = this.src;
-            modalCaption.textContent = this.alt;
+    if (galleryImages.length > 0 && modal && modalImg && modalCaption && closeBtn) {
+        galleryImages.forEach(img => {
+            img.addEventListener('click', function () {
+                modal.style.display = "flex";
+                modalImg.src = this.src;
+                modalCaption.textContent = this.alt || '';
+            });
         });
-    });
 
-    closeBtn.addEventListener('click', function() {
-        modal.style.display = "none";
-        modalImg.src = "";
-        modalCaption.textContent = "";
-    });
-
-    // Optional: close modal when clicking outside the image
-    modal.addEventListener('click', function(e) {
-        if (e.target === modal) {
+        closeBtn.addEventListener('click', () => {
             modal.style.display = "none";
             modalImg.src = "";
             modalCaption.textContent = "";
-        }
-    });
-});
+        });
 
+        modal.addEventListener('click', function (e) {
+            if (e.target === modal) {
+                modal.style.display = "none";
+                modalImg.src = "";
+                modalCaption.textContent = "";
+            }
+        });
+    }
 
+    // -------------------------
+    // Contact form submission
+    // -------------------------
+    const contactForm = document.getElementById("contactForm");
+    if (contactForm) {
+        contactForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
 
-document.getElementById("contactForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
+            const formData = new FormData(contactForm);
+            const object = Object.fromEntries(formData.entries());
 
-    const name = document.getElementById("name").value;
-    const email = document.getElementById("email").value;
-    const message = document.getElementById("message").value;
+            try {
+                const res = await fetch("https://formspree.io/f/mblkqyrn", {
+                    method: "POST",
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(object)
+                });
 
-    const res = await fetch("/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, message })
-    });
-
-    const data = await res.json();
-    alert(data.message);
+                if (res.ok) {
+                    alert("Message sent successfully!");
+                    contactForm.reset();
+                } else {
+                    alert("Oops! Something went wrong.");
+                }
+            } catch (error) {
+                alert("Network error. Please try again later.");
+            }
+        });
+    }
 });
