@@ -1,26 +1,23 @@
-// JavaScript for interactivity: smooth scrolling, slider, gallery modal, and form handling.
-
-document.addEventListener('DOMContentLoaded', function () {
-    /* ---------------- Smooth Scrolling ---------------- */
+document.addEventListener('DOMContentLoaded', () => {
+    // Smooth scrolling for navigation links
     const links = document.querySelectorAll('a[href^="#"]');
     links.forEach(link => {
-        link.addEventListener('click', function (e) {
+        link.addEventListener('click', function(e) {
             e.preventDefault();
-            const targetId = this.getAttribute('href');
-            const targetElement = document.querySelector(targetId);
+            const targetElement = document.querySelector(this.getAttribute('href'));
             if (targetElement) {
                 targetElement.scrollIntoView({ behavior: 'smooth' });
             }
         });
     });
 
-    /* ---------------- Slider Logic ---------------- */
+    // Slider functionality
     const slidesRow = document.querySelector('.slides-row');
     const slides = document.querySelectorAll('.slide');
     const prevBtn = document.querySelector('.slider-btn.prev');
     const nextBtn = document.querySelector('.slider-btn.next');
     let current = 0;
-    const visibleSlides = 2.5; // Show 2 and a half slides
+    const visibleSlides = 2.5;
 
     function updateSlider() {
         if (slides.length > 0) {
@@ -29,75 +26,77 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    if (prevBtn && nextBtn && slides.length > 0) {
-        prevBtn.addEventListener('click', () => {
-            if (current > 0) current--;
-            updateSlider();
-        });
-
-        nextBtn.addEventListener('click', () => {
-            if (current < slides.length - visibleSlides) current++;
-            updateSlider();
-        });
-
-        window.addEventListener('resize', updateSlider);
+    prevBtn?.addEventListener('click', () => {
+        if (current > 0) current--;
         updateSlider();
-    }
+    });
 
-    /* ---------------- Gallery Modal Logic ---------------- */
+    nextBtn?.addEventListener('click', () => {
+        if (current < slides.length - visibleSlides) current++;
+        updateSlider();
+    });
+
+    window.addEventListener('resize', updateSlider);
+    updateSlider();
+
+    // Gallery modal logic
     const galleryImages = document.querySelectorAll('.gallery-img');
     const modal = document.getElementById('gallery-modal');
     const modalImg = document.getElementById('gallery-modal-img');
     const modalCaption = document.getElementById('gallery-modal-caption');
     const closeBtn = document.getElementById('gallery-close');
 
-    if (galleryImages.length > 0 && modal && modalImg && modalCaption && closeBtn) {
-        galleryImages.forEach(img => {
-            img.addEventListener('click', function () {
-                modal.style.display = "flex";
-                modalImg.src = this.src;
-                modalCaption.textContent = this.alt;
-            });
+    galleryImages.forEach(img => {
+        img.addEventListener('click', function() {
+            modal.style.display = "flex";
+            modalImg.src = this.src;
+            modalCaption.textContent = this.alt;
         });
+    });
 
-        closeBtn.addEventListener('click', function () {
+    closeBtn?.addEventListener('click', () => {
+        modal.style.display = "none";
+        modalImg.src = "";
+        modalCaption.textContent = "";
+    });
+
+    modal?.addEventListener('click', (e) => {
+        if (e.target === modal) {
             modal.style.display = "none";
             modalImg.src = "";
             modalCaption.textContent = "";
-        });
+        }
+    });
 
-        modal.addEventListener('click', function (e) {
-            if (e.target === modal) {
-                modal.style.display = "none";
-                modalImg.src = "";
-                modalCaption.textContent = "";
+    // Contact form submission (prevent duplicate sends)
+    const contactForm = document.getElementById("contactForm");
+    if (contactForm) {
+        contactForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            if (contactForm.dataset.submitting === "true") return; // prevent double send
+            contactForm.dataset.submitting = "true";
+
+            const data = new FormData(contactForm);
+
+            try {
+                const res = await fetch("https://formspree.io/f/mblkqyrn", {
+                    method: "POST",
+                    body: data,
+                    headers: { 'Accept': 'application/json' }
+                });
+
+                if (res.ok) {
+                    alert("Message sent successfully!");
+                    contactForm.reset();
+                } else {
+                    alert("Oops! Something went wrong.");
+                }
+            } catch (error) {
+                alert("An error occurred. Please try again.");
+            } finally {
+                contactForm.dataset.submitting = "false";
             }
         });
     }
 });
-
-/* ---------------- Contact Form Handling ---------------- */
-const contactForm = document.getElementById("contactForm");
-if (contactForm) {
-    contactForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const data = new FormData(contactForm);
-
-        try {
-            const res = await fetch("https://formspree.io/f/mblkqyrn", {
-                method: "POST",
-                body: data,
-                headers: { 'Accept': 'application/json' }
-            });
-
-            if (res.ok) {
-                alert("Message sent successfully!");
-                contactForm.reset();
-            } else {
-                alert("Oops! Something went wrong.");
-            }
-        } catch (error) {
-            alert("Network error. Please try again later.");
-        }
-    });
-}
