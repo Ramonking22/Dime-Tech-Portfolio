@@ -92,6 +92,58 @@ body {
     color: #fff !important;
 }
 
+/* Hamburger base style */
+.hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 25px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.hamburger span {
+    display: block;
+    height: 3px;
+    background: #fff;
+    border-radius: 3px;
+    transition: all 0.3s ease;
+}
+
+/* Mobile menu */
+@media (max-width: 768px) {
+    .hamburger {
+        display: flex;
+    }
+
+    .navbar-links {
+        display: none;
+        flex-direction: column;
+        background: linear-gradient(90deg, #5c6ac4 0%, #00c6ae 100%);
+        position: absolute;
+        top: 68px;
+        right: 0;
+        width: 200px;
+        padding: 1rem;
+        transition: max-height 0.3s ease;
+    }
+
+    .navbar-links.show {
+        display: flex;
+    }
+
+    /* Hamburger animation to X */
+    .hamburger.active span:nth-child(1) {
+        transform: translateY(7px) rotate(45deg);
+    }
+    .hamburger.active span:nth-child(2) {
+        opacity: 0;
+    }
+    .hamburger.active span:nth-child(3) {
+        transform: translateY(-7px) rotate(-45deg);
+    }
+}
+
 /* Homepage */
 #homepage {
     position: relative;
