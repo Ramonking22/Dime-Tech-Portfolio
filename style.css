@@ -28,6 +28,12 @@ body {
     position: sticky;
     top: 0;
     z-index: 100;
+
+    display: flex;              /* Make items flex */
+    flex-direction: row;        /* Always horizontal */
+    align-items: center;        /* Vertically center items */
+    justify-content: space-between; /* Space items apart or use center */
+    padding: 0.5rem 1rem;       /* Some spacing inside */
 }
 .navbar-container {
     display: flex;
