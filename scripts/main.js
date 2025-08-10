@@ -1,8 +1,7 @@
-// JavaScript for site interactivity: smooth scrolling, slider, gallery modal, and contact form
+// JavaScript for interactivity: smooth scrolling, slider, gallery modal, and form handling.
+
 document.addEventListener('DOMContentLoaded', function () {
-    // -------------------------
-    // Smooth scrolling for navigation links
-    // -------------------------
+    /* ---------------- Smooth Scrolling ---------------- */
     const links = document.querySelectorAll('a[href^="#"]');
     links.forEach(link => {
         link.addEventListener('click', function (e) {
@@ -15,9 +14,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // -------------------------
-    // Slider functionality
-    // -------------------------
+    /* ---------------- Slider Logic ---------------- */
     const slidesRow = document.querySelector('.slides-row');
     const slides = document.querySelectorAll('.slide');
     const prevBtn = document.querySelector('.slider-btn.prev');
@@ -47,9 +44,7 @@ document.addEventListener('DOMContentLoaded', function () {
         updateSlider();
     }
 
-    // -------------------------
-    // Gallery modal
-    // -------------------------
+    /* ---------------- Gallery Modal Logic ---------------- */
     const galleryImages = document.querySelectorAll('.gallery-img');
     const modal = document.getElementById('gallery-modal');
     const modalImg = document.getElementById('gallery-modal-img');
@@ -61,11 +56,11 @@ document.addEventListener('DOMContentLoaded', function () {
             img.addEventListener('click', function () {
                 modal.style.display = "flex";
                 modalImg.src = this.src;
-                modalCaption.textContent = this.alt || '';
+                modalCaption.textContent = this.alt;
             });
         });
 
-        closeBtn.addEventListener('click', () => {
+        closeBtn.addEventListener('click', function () {
             modal.style.display = "none";
             modalImg.src = "";
             modalCaption.textContent = "";
@@ -79,37 +74,30 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     }
-
-    // -------------------------
-    // Contact form submission
-    // -------------------------
-    const contactForm = document.getElementById("contactForm");
-    if (contactForm) {
-        contactForm.addEventListener("submit", async (e) => {
-            e.preventDefault();
-
-            const formData = new FormData(contactForm);
-            const object = Object.fromEntries(formData.entries());
-
-            try {
-                const res = await fetch("https://formspree.io/f/mblkqyrn", {
-                    method: "POST",
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(object)
-                });
-
-                if (res.ok) {
-                    alert("Message sent successfully!");
-                    contactForm.reset();
-                } else {
-                    alert("Oops! Something went wrong.");
-                }
-            } catch (error) {
-                alert("Network error. Please try again later.");
-            }
-        });
-    }
 });
+
+/* ---------------- Contact Form Handling ---------------- */
+const contactForm = document.getElementById("contactForm");
+if (contactForm) {
+    contactForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const data = new FormData(contactForm);
+
+        try {
+            const res = await fetch("https://formspree.io/f/mblkqyrn", {
+                method: "POST",
+                body: data,
+                headers: { 'Accept': 'application/json' }
+            });
+
+            if (res.ok) {
+                alert("Message sent successfully!");
+                contactForm.reset();
+            } else {
+                alert("Oops! Something went wrong.");
+            }
+        } catch (error) {
+            alert("Network error. Please try again later.");
+        }
+    });
+}
