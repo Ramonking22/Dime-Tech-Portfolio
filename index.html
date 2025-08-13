@@ -8,21 +8,21 @@
 </head>
 <body>
     <!-- Navigation Bar -->
-    <nav class="navbar">
+<nav class="navbar">
     <div class="navbar-container">
         <a href="#homepage" class="navbar-logo">
             <img src="images/d tech agency logo white.png" alt="Agency Logo" style="height:44px; border-radius:8px;">
             <span class="navbar-title">DimeTech Agency</span>
         </a>
 
-        <!-- Hamburger icon -->
-        <div class="hamburger" id="hamburger">
+        <!-- Burger Menu Button -->
+        <button class="menu-toggle" aria-label="Toggle Menu">
             <span></span>
             <span></span>
             <span></span>
-        </div>
+        </button>
 
-        <ul class="navbar-links" id="nav-links">
+        <ul class="navbar-links">
             <li><a href="#homepage">Home</a></li>
             <li><a href="#services">Services</a></li>
             <li><a href="#our-work">Our Work</a></li>
@@ -30,10 +30,12 @@
             <li><a href="#team-gallery">Gallery</a></li>
             <li><a href="#testimonials">Testimonials</a></li>
             <li><a href="#blog">Blog</a></li>
+            <li><a href="#about">About</a></li>
             <li><a href="#contact" class="navbar-cta">Contact</a></li>
         </ul>
     </div>
 </nav>
+
 
     <!-- Homepage Section -->
     <section id="homepage">
@@ -78,7 +80,7 @@
                         <li>Basic theme customization</li>
                         <li>Email support</li>
                     </ul>
-                    <div class="price-tag">$159</div>
+                    <div class="price-tag">$150</div>
                     <a href="#contact" class="cta-btn">Choose Basic</a>
                 </div>
                 <div class="service-card pricing-card premium">
@@ -92,7 +94,7 @@
                         <li>Payment Gateway Integration</li>
                         <li>Priority support</li>
                     </ul>
-                    <div class="price-tag">$479</div>
+                    <div class="price-tag">$495</div>
                     <a href="#contact" class="cta-btn">Choose Premium</a>
                 </div>
                 <div class="service-card pricing-card advance">
@@ -105,7 +107,7 @@
                         <li>Unlimited products</li>
                         <li>Dedicated manager</li>
                     </ul>
-                    <div class="price-tag">$1,290</div>
+                    <div class="price-tag">$1,270</div>
                     <a href="#contact" class="cta-btn">Choose Advance</a>
                 </div>
                 <div class="service-card pricing-card pro">
@@ -118,7 +120,7 @@
                         <li>Ongoing support & updates</li>
                         <li>Monthly analytics report</li>
                     </ul>
-                    <div class="price-tag">$2,150</div>
+                    <div class="price-tag">$2,420</div>
                     <a href="#contact" class="cta-btn">Choose Pro</a>
                 </div>
             </div>
@@ -267,17 +269,8 @@
             </p>
             <div class="gallery-grid">
                 <img src="images/team-image2.jpeg" alt="Team Meeting" class="gallery-img gallery-big">
-                <img src="images/qodri-adam.jpeg" alt="Workshop" class="gallery-img gallery-small">
                 <img src="images/team-image1.jpeg" alt="Celebration" class="gallery-img gallery-small">
-                <img src="images/check-rally-boss.jpeg" alt="Project Planning" class="gallery-img gallery-big">
                 <img src="images/office-boss.jpeg" alt="Office Fun" class="gallery-img gallery-small">
-                <img src="images/qodri-adeola.jpeg" alt="Teamwork" class="gallery-img gallery-small">
-                <img src="images/qodri-egon.jpeg" alt="Strategy Session" class="gallery-img gallery-big">
-                <img src="images/qodri-no.jpeg" alt="Client Presentation" class="gallery-img gallery-small">
-                <img src="images/qodri-racheal.jpeg" alt="Remote Collaboration" class="gallery-img gallery-small">
-                <img src="images/qodri-ramon.jpeg" alt="Team Lunch" class="gallery-img gallery-big">
-                <img src="images/qodri-sewa.jpeg" alt="Award Ceremony" class="gallery-img gallery-small">
-                <img src="images/qodri-wasilat.jpeg" alt="Training Day" class="gallery-img gallery-small">
             </div>
         </div>
         <!-- Modal for fullscreen image -->
@@ -288,26 +281,41 @@
         </div>
     </section>
 
+    <!-- About Section -->
+<section id="about" class="about-section">
+    <div class="about-container">
+        <h2>About DimeTech Agency</h2>
+        <p>
+            At <strong>DimeTech Agency</strong>, we specialize in building and optimizing 
+            <strong>Shopify stores</strong> that don’t just look great — they sell. 
+            Whether you’re launching your first online shop or scaling an established brand, 
+            our mission is simple: <em>to turn your eCommerce vision into a high-converting, customer-friendly reality.</em>
+        </p>
+        <ul>
+            <li>Custom Shopify themes tailored to your brand.</li>
+            <li>Secure payment gateway integration and smooth checkout flows.</li>
+            <li>Optimization for speed, SEO, and mobile responsiveness.</li>
+            <li>Conversion-focused design and Shopify app integration.</li>
+        </ul>
+        <p>
+            💡 Whether you need a <strong>Shopify store from scratch</strong> or a 
+            <strong>revamp of your existing store</strong>, we’re here to help you create an 
+            eCommerce experience your customers will love.
+        </p>
+        <a href="#contact" class="about-cta">Contact Us</a>
+    </div>
+</section>
+
+
     <!-- Contact Section -->
     <section id="contact">
-        <div class="container">
-            <h2>Contact Us</h2>
-            <form id="contactForm">
-                <input type="text" name="name" placeholder="Your Name" required>
-                <input type="email" name="email" placeholder="Your Email" required>
-                <textarea name="message" placeholder="Your Message" required></textarea>
-                <button type="submit">Send Message</button>
-            </form>
-            
-            <p id="formResponse" style="color: green;"></p>
-            
-            <div id="form-success" style="display:none; color:green; margin-top:18px;">
-                Thank you! Your message has been sent.
-            </div>
-            <div id="form-error" style="display:none; color:red; margin-top:18px;">
-                Sorry, there was a problem sending your message. Please try again.
-            </div>
-        </div>
+        <form id="contactForm">
+            <input type="text" name="name" placeholder="Your Name" required>
+            <input type="email" name="email" placeholder="Your Email" required>
+            <textarea name="message" placeholder="Your Message" required></textarea>
+            <button type="submit">Send Message</button>
+            <p id="formMessage" style="display:none; margin-top:10px; font-size:14px;"></p>
+        </form>
     </section>
 
     <!-- Blog Section -->
@@ -327,6 +335,54 @@
         </div>
     </section>
 
+    <!-- FAQ Section -->
+<section id="faq" class="faq-section">
+    <div class="faq-container">
+        <h2>Frequently Asked Questions</h2>
+
+        <div class="faq-item">
+            <button class="faq-question">
+                How long does it take to build a Shopify store?
+                <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+                <p>Most Shopify projects take between 1–3 weeks, depending on the complexity, design requirements, and the number of products. We’ll give you a clear timeline after our initial consultation.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question">
+                Do you handle Shopify store setup from scratch?
+                <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+                <p>Yes! We can set up your store from the ground up, including theme installation, customization, product uploads, payment gateways, and basic SEO setup.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question">
+                Can you redesign my existing Shopify store?
+                <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+                <p>Absolutely. We specialize in store makeovers, improving your design, layout, and functionality while keeping your existing products and settings intact.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question">
+                How much does a Shopify project cost?
+                <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-answer">
+                <p>Pricing depends on your needs, small stores start from $500, while custom, large-scale builds can be higher. Contact us for a tailored quote.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+
     <!-- CTA Section -->
     <section id="cta">
         <div class="container">
@@ -341,40 +397,76 @@
     </footer>
 
     <script>
-document.addEventListener("DOMContentLoaded", function() {
-    const form = document.getElementById("contactForm");
-    let isSubmitting = false; // Prevent double submission
+document.getElementById("contactForm").addEventListener("submit", async function(e) {
+    e.preventDefault(); // stop normal form submission
 
-    form.addEventListener("submit", async function(event) {
-        event.preventDefault();
+    const messageBox = document.getElementById("formMessage");
 
-        if (isSubmitting) return; // Stop if already sending
-        isSubmitting = true;
+    const formData = {
+        name: this.name.value.trim(),
+        email: this.email.value.trim(),
+        message: this.message.value.trim()
+    };
 
-        const formData = new FormData(form);
+    try {
+        const response = await fetch("https://formspree.io/f/mblkqyrn", {
+            method: "POST",
+            headers: { 
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            body: JSON.stringify(formData)
+        });
 
-        try {
-            const response = await fetch("https://formspree.io/f/mblkqyrn", {
-                method: "POST",
-                body: formData,
-                headers: { "Accept": "application/json" }
-            });
-
-            if (response.ok) {
-                alert("Message sent successfully!");
-                form.reset();
-            } else {
-                alert("Oops! Something went wrong.");
-            }
-        } catch (error) {
-            alert("Error sending message. Please try again.");
-        } finally {
-            isSubmitting = false; // Allow future submissions
+        if (response.ok) {
+            messageBox.textContent = "✅ Thank you! We’ve got your message and our team will respond within 24 hours.";
+            messageBox.style.color = "green";
+            messageBox.style.display = "block";
+            this.reset();
+        } else {
+            messageBox.textContent = "❌ Oops! Something went wrong.";
+            messageBox.style.color = "red";
+            messageBox.style.display = "block";
         }
-    });
+    } catch (error) {
+        console.error("❌ Error:", error);
+        messageBox.textContent = "❌ Error sending message. Please try again.";
+        messageBox.style.color = "red";
+        messageBox.style.display = "block";
+    }
 });
 </script>
 
     <script src="scripts/main.js"></script>
+    
+    <!--Start of Tawk.to Script-->
+<script type="text/javascript">
+var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
+
+Tawk_API.onLoad = function(){
+    // Set brand colors
+    Tawk_API.setAttributes({
+        widgetColor: '#5c6ac4',
+        widgetHoverColor: '#00c6ae'
+    }, function(error){});
+
+    // Set welcome message
+    Tawk_API.addEvent('welcome-message', {
+        message: "👋 Welcome to DimeTech Agency Shopify solutions made simple. How can we assist you today?"
+    });
+};
+
+(function(){
+    var s1 = document.createElement("script"),
+        s0 = document.getElementsByTagName("script")[0];
+    s1.async = true;
+    s1.src = 'https://embed.tawk.to/689bf5c3e0fd9f192a113875/1j2gjg1ht';
+    s1.charset = 'UTF-8';
+    s1.setAttribute('crossorigin','*');
+    s0.parentNode.insertBefore(s1, s0);
+})();
+</script>
+<!--End of Tawk.to Script-->
+
 </body>
 </html>
