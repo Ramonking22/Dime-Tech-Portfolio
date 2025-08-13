@@ -1,37 +1,49 @@
-document.addEventListener('DOMContentLoaded', () => {
+// This file contains JavaScript code for interactivity on the site, such as handling form submissions, smooth scrolling for navigation, and any dynamic content updates.
+
+document.addEventListener('DOMContentLoaded', function() {
     // Smooth scrolling for navigation links
     const links = document.querySelectorAll('a[href^="#"]');
     links.forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
-            const targetElement = document.querySelector(this.getAttribute('href'));
-            if (targetElement) {
-                targetElement.scrollIntoView({ behavior: 'smooth' });
-            }
+            const targetId = this.getAttribute('href');
+            const targetElement = document.querySelector(targetId);
+            targetElement.scrollIntoView({ behavior: 'smooth' });
         });
     });
 
-    // Slider functionality
+    // Handle form submission
+    const form = document.querySelector('form');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(form);
+            // Here you can handle the form data, e.g., send it to a server
+            alert('Thank you for your submission! We will get back to you soon.');
+            form.reset(); // Reset the form after submission
+        });
+    }
+
+    // Dynamic content updates can be added here
+
     const slidesRow = document.querySelector('.slides-row');
     const slides = document.querySelectorAll('.slide');
     const prevBtn = document.querySelector('.slider-btn.prev');
     const nextBtn = document.querySelector('.slider-btn.next');
     let current = 0;
-    const visibleSlides = 2.5;
+    const visibleSlides = 2.5; // Show 2 and a half slides
 
     function updateSlider() {
-        if (slides.length > 0) {
-            const slideWidth = slides[0].offsetWidth + parseInt(getComputedStyle(slides[0]).marginRight);
-            slidesRow.style.transform = `translateX(-${current * slideWidth}px)`;
-        }
+        const slideWidth = slides[0].offsetWidth + parseInt(getComputedStyle(slides[0]).marginRight);
+        slidesRow.style.transform = `translateX(-${current * slideWidth}px)`;
     }
 
-    prevBtn?.addEventListener('click', () => {
+    prevBtn.addEventListener('click', () => {
         if (current > 0) current--;
         updateSlider();
     });
 
-    nextBtn?.addEventListener('click', () => {
+    nextBtn.addEventListener('click', () => {
         if (current < slides.length - visibleSlides) current++;
         updateSlider();
     });
@@ -54,57 +66,78 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    closeBtn?.addEventListener('click', () => {
+    closeBtn.addEventListener('click', function() {
         modal.style.display = "none";
         modalImg.src = "";
         modalCaption.textContent = "";
     });
 
-    modal?.addEventListener('click', (e) => {
+    // Optional: close modal when clicking outside the image
+    modal.addEventListener('click', function(e) {
         if (e.target === modal) {
             modal.style.display = "none";
             modalImg.src = "";
             modalCaption.textContent = "";
         }
     });
-
-    // Contact form submission (prevent duplicate sends)
-    const contactForm = document.getElementById("contactForm");
-    if (contactForm) {
-        contactForm.addEventListener("submit", async (e) => {
-            e.preventDefault();
-
-            if (contactForm.dataset.submitting === "true") return; // prevent double send
-            contactForm.dataset.submitting = "true";
-
-            const data = new FormData(contactForm);
-
-            try {
-                const res = await fetch("https://formspree.io/f/mblkqyrn", {
-                    method: "POST",
-                    body: data,
-                    headers: { 'Accept': 'application/json' }
-                });
-
-                if (res.ok) {
-                    alert("Message sent successfully!");
-                    contactForm.reset();
-                } else {
-                    alert("Oops! Something went wrong.");
-                }
-            } catch (error) {
-                alert("An error occurred. Please try again.");
-            } finally {
-                contactForm.dataset.submitting = "false";
-            }
-        });
-    }
 });
 
-const hamburger = document.getElementById('hamburger');
-    const navLinks = document.getElementById('nav-links');
 
-    hamburger.addEventListener('click', () => {
-        navLinks.classList.toggle('show');
-        hamburger.classList.toggle('active');
+// Contact form submission handling
+document.getElementById("contactForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const name = document.getElementById("name").value;
+    const email = document.getElementById("email").value;
+    const message = document.getElementById("message").value;
+
+    const res = await fetch("/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, message })
     });
+
+    const data = await res.json();
+    alert(data.message);
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    const menuBtn = document.querySelector(".menu-toggle");
+    const navMenu = document.querySelector(".navbar-links");
+    const navLinks = document.querySelectorAll(".navbar-links a");
+
+    // Toggle menu open/close
+    menuBtn.addEventListener("click", () => {
+        navMenu.classList.toggle("active");
+        menuBtn.classList.toggle("open");
+    });
+
+    // Close menu when a link is clicked
+    navLinks.forEach(link => {
+        link.addEventListener("click", () => {
+            navMenu.classList.remove("active");
+            menuBtn.classList.remove("open");
+        });
+    });
+
+    // Close menu when scrolling
+    window.addEventListener("scroll", () => {
+        if (navMenu.classList.contains("active")) {
+            navMenu.classList.remove("active");
+            menuBtn.classList.remove("open");
+        }
+    });
+});
+
+// FAQ toggle
+document.querySelectorAll(".faq-question").forEach(button => {
+    button.addEventListener("click", () => {
+        button.classList.toggle("active");
+        const answer = button.nextElementSibling;
+        if (answer.style.display === "block") {
+            answer.style.display = "none";
+        } else {
+            answer.style.display = "block";
+        }
+    });
+});
