@@ -29,7 +29,6 @@ body {
     top: 0;
     z-index: 100;
 }
-
 .navbar-container {
     display: flex;
     align-items: center;
@@ -39,21 +38,18 @@ body {
     padding: 0 32px;
     height: 68px;
 }
-
 .navbar-logo {
     display: flex;
     align-items: center;
     gap: 12px;
     text-decoration: none;
 }
-
 .navbar-title {
     font-size: 1.35rem;
     font-weight: 700;
     letter-spacing: 1px;
     color: #fff;
 }
-
 .navbar-links {
     list-style: none;
     display: flex;
@@ -61,7 +57,6 @@ body {
     margin: 0;
     padding: 0;
 }
-
 .navbar-links li a {
     color: #fff;
     text-decoration: none;
@@ -71,13 +66,11 @@ body {
     border-bottom: 2px solid transparent;
     transition: color 0.2s, border-bottom 0.2s;
 }
-
 .navbar-links li a:hover,
 .navbar-links li .navbar-cta {
     color: #ffe082;
     border-bottom: 2px solid #00c6ae;
 }
-
 .navbar-cta {
     background: #fff;
     color: #5c6ac4 !important;
@@ -88,63 +81,69 @@ body {
     transition: background 0.2s, color 0.2s;
     border: none;
 }
-
 .navbar-cta:hover {
     background: #00c6ae;
     color: #fff !important;
 }
 
-/* Hamburger button */
-.hamburger {
+/* ================== */
+/* Mobile Menu Styles */
+/* ================== */
+
+/* Burger button (hidden on desktop) */
+.menu-toggle {
     display: none;
     flex-direction: column;
     justify-content: space-between;
-    width: 25px;
-    height: 18px;
+    width: 28px;
+    height: 20px;
+    background: none;
+    border: none;
     cursor: pointer;
 }
-
-.hamburger span {
-    display: block;
+.menu-toggle span {
     height: 3px;
     background: #fff;
     border-radius: 3px;
-    transition: all 0.3s ease;
+    transition: 0.3s;
 }
 
-/* Mobile view */
+/* Burger → X animation */
+.menu-toggle.open span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+}
+.menu-toggle.open span:nth-child(2) {
+    opacity: 0;
+}
+.menu-toggle.open span:nth-child(3) {
+    transform: rotate(-45deg) translate(5px, -5px);
+}
+
+/* Mobile menu */
 @media (max-width: 768px) {
-    .hamburger {
+    .menu-toggle {
         display: flex;
     }
-
     .navbar-links {
-        display: none;
-        flex-direction: column;
-        background: linear-gradient(90deg, #5c6ac4 0%, #00c6ae 100%);
         position: absolute;
         top: 68px;
         right: 0;
-        width: 200px;
-        padding: 1rem;
-        box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+        background: linear-gradient(90deg, #5c6ac4 0%, #00c6ae 100%);
+        flex-direction: column;
+        width: 220px;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
     }
-
-    .navbar-links.show {
-        display: flex;
+    .navbar-links.active {
+        max-height: 500px;
     }
-
-    /* Hamburger animation to X */
-    .hamburger.active span:nth-child(1) {
-        transform: translateY(7px) rotate(45deg);
-    }
-    .hamburger.active span:nth-child(2) {
-        opacity: 0;
-    }
-    .hamburger.active span:nth-child(3) {
-        transform: translateY(-7px) rotate(-45deg);
+    .navbar-links li {
+        text-align: right;
+        padding: 10px 20px;
     }
 }
+
 
 /* Homepage */
 #homepage {
@@ -661,6 +660,113 @@ body {
     }
 }
 
+/* About Section */
+.about-section {
+    background: linear-gradient(90deg, #5c6ac4 0%, #00c6ae 100%);
+    color: #fff;
+    padding: 60px 20px;
+}
+.about-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    text-align: center;
+}
+.about-container h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    font-weight: 700;
+}
+.about-container p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+.about-container ul {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 20px;
+}
+.about-container ul li {
+    font-size: 1rem;
+    padding: 6px 0;
+    position: relative;
+}
+.about-container ul li::before {
+    content: "✔";
+    color: #ffe082;
+    margin-right: 8px;
+}
+.about-cta {
+    display: inline-block;
+    background: #fff;
+    color: #5c6ac4;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+.about-cta:hover {
+    background: #00c6ae;
+    color: #fff;
+}
+
+/* FAQ Section */
+.faq-section {
+    background: #f9f9f9;
+    padding: 60px 20px;
+}
+.faq-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+.faq-container h2 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 30px;
+    font-weight: 700;
+    color: #5c6ac4;
+}
+.faq-item {
+    border-bottom: 1px solid #ddd;
+    padding: 15px 0;
+}
+.faq-question {
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: left;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #333;
+    transition: color 0.3s ease;
+}
+.faq-question:hover {
+    color: #00c6ae;
+}
+.faq-icon {
+    font-size: 1.5rem;
+    color: #5c6ac4;
+    transition: transform 0.3s ease;
+}
+.faq-question.active .faq-icon {
+    transform: rotate(45deg);
+}
+.faq-answer {
+    display: none;
+    padding-top: 10px;
+    color: #555;
+    line-height: 1.5;
+}
+.faq-answer p {
+    margin: 0;
+}
+
+
 /* Slider */
 .slider {
     position: relative;
@@ -980,9 +1086,4 @@ body {
         gap: 24px;
         align-items: center;
     }
-}
-
-.navbar-links {
-    flex-direction: row !important;
-    flex-wrap: wrap; /* optional: wrap to next line on very small screens */
 }
