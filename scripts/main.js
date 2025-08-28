@@ -141,3 +141,41 @@ document.querySelectorAll(".faq-question").forEach(button => {
         }
     });
 });
+
+// === Korapay Payment Integration for Service Packages ===
+document.addEventListener("DOMContentLoaded", () => {
+    const serviceButtons = document.querySelectorAll(".pay-service");
+
+    serviceButtons.forEach(button => {
+        button.addEventListener("click", function () {
+            const serviceName = this.getAttribute("data-service");
+            const amount = parseInt(this.getAttribute("data-amount"));
+            
+            const name = document.getElementById("name")?.value.trim() || "DimeTech Client";
+            const email = document.getElementById("email")?.value.trim() || "client@example.com";
+
+            Korapay.initialize({
+                key: "pk_test_MZY4jqmLpYGSBxeEZLL5RE61Xpoow3JM43v6Uit3", // 🔑 Replace with your PUBLIC KEY from Korapay dashboard
+                reference: "ref_" + Date.now(),
+                amount: amount,
+                currency: "NGN",
+                customer: {
+                    name: name,
+                    email: email
+                },
+                onClose: function () {
+                    alert("❌ Payment closed without completing.");
+                },
+                callback: function (response) {
+                    console.log("✅ Payment response: ", response);
+                    if (response.status === "success") {
+                        alert("🎉 Payment Successful for " + serviceName + "!");
+                    } else {
+                        alert("❌ Payment Failed: " + response.status);
+                    }
+                }
+            });
+        });
+    });
+});
+
