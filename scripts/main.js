@@ -18,9 +18,8 @@ document.addEventListener('DOMContentLoaded', function() {
         form.addEventListener('submit', function(e) {
             e.preventDefault();
             const formData = new FormData(form);
-            // Here you can handle the form data, e.g., send it to a server
             alert('Thank you for your submission! We will get back to you soon.');
-            form.reset(); // Reset the form after submission
+            form.reset();
         });
     }
 
@@ -31,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const prevBtn = document.querySelector('.slider-btn.prev');
     const nextBtn = document.querySelector('.slider-btn.next');
     let current = 0;
-    const visibleSlides = 2.5; // Show 2 and a half slides
+    const visibleSlides = 2.5;
 
     function updateSlider() {
         const slideWidth = slides[0].offsetWidth + parseInt(getComputedStyle(slides[0]).marginRight);
@@ -72,7 +71,6 @@ document.addEventListener('DOMContentLoaded', function() {
         modalCaption.textContent = "";
     });
 
-    // Optional: close modal when clicking outside the image
     modal.addEventListener('click', function(e) {
         if (e.target === modal) {
             modal.style.display = "none";
@@ -106,13 +104,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const navMenu = document.querySelector(".navbar-links");
     const navLinks = document.querySelectorAll(".navbar-links a");
 
-    // Toggle menu open/close
     menuBtn.addEventListener("click", () => {
         navMenu.classList.toggle("active");
         menuBtn.classList.toggle("open");
     });
 
-    // Close menu when a link is clicked
     navLinks.forEach(link => {
         link.addEventListener("click", () => {
             navMenu.classList.remove("active");
@@ -120,7 +116,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // Close menu when scrolling
     window.addEventListener("scroll", () => {
         if (navMenu.classList.contains("active")) {
             navMenu.classList.remove("active");
@@ -142,7 +137,7 @@ document.querySelectorAll(".faq-question").forEach(button => {
     });
 });
 
-// === Korapay Payment Integration for Service Packages ===
+// === Flutterwave Payment Integration for Service Packages ===
 document.addEventListener("DOMContentLoaded", () => {
     const serviceButtons = document.querySelectorAll(".pay-service");
 
@@ -150,32 +145,33 @@ document.addEventListener("DOMContentLoaded", () => {
         button.addEventListener("click", function () {
             const serviceName = this.getAttribute("data-service");
             const amount = parseInt(this.getAttribute("data-amount"));
-            
+
             const name = document.getElementById("name")?.value.trim() || "DimeTech Client";
             const email = document.getElementById("email")?.value.trim() || "client@example.com";
 
-            Korapay.initialize({
-                key: "pk_test_MZY4jqmLpYGSBxeEZLL5RE61Xpoow3JM43v6Uit3", // 🔑 Replace with your PUBLIC KEY from Korapay dashboard
-                reference: "ref_" + Date.now(),
+            FlutterwaveCheckout({
+                public_key: "FLWPUBK-5371eca8e52f6277d44f696effabbdf7-X, // 🔑 Replace with your PUBLIC KEY
+                tx_ref: "tx_" + Date.now(),
                 amount: amount,
                 currency: "NGN",
+                payment_options: "card, banktransfer, ussd",
                 customer: {
+                    email: email,
                     name: name,
-                    email: email
                 },
-                onClose: function () {
+                callback: function (data) {
+                    console.log("✅ Payment successful:", data);
+                    alert("🎉 Payment Successful for " + serviceName + "!");
+                },
+                onclose: function () {
                     alert("❌ Payment closed without completing.");
                 },
-                callback: function (response) {
-                    console.log("✅ Payment response: ", response);
-                    if (response.status === "success") {
-                        alert("🎉 Payment Successful for " + serviceName + "!");
-                    } else {
-                        alert("❌ Payment Failed: " + response.status);
-                    }
-                }
+                customizations: {
+                    title: "DimeTech Agency",
+                    description: "Payment for " + serviceName,
+                    logo: "https://ramonking22.github.io/Dime-Tech-Portfolio/dimetech_preview.jpg", // replace with your logo
+                },
             });
         });
     });
 });
-
