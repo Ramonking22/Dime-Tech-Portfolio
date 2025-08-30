@@ -21,7 +21,7 @@
     <title>Shopify Expert Portfolio</title>
     <link rel="stylesheet" href="style.css">
 
-    <!-- Flutterwave Script -->
+    <!-- Flutterwave Script --> 
     <script src="https://checkout.flutterwave.com/v3.js"></script>
 </head>
 <body>
@@ -474,25 +474,72 @@ document.getElementById("contactForm").addEventListener("submit", async function
     }
 });
 
-        
-<script>
+    /* =========================
+   Flutterwave Script
+========================== */
+    <script src="https://checkout.flutterwave.com/v3.js"></script>
+
+    <script>
+document.getElementById("contactForm").addEventListener("submit", async function(e) {
+    e.preventDefault(); 
+
+    const messageBox = document.getElementById("formMessage");
+
+    const formData = {
+        name: this.name.value.trim(),
+        email: this.email.value.trim(),
+        message: this.message.value.trim()
+    };
+
+    try {
+        const response = await fetch("https://formspree.io/f/mblkqyrn", {
+            method: "POST",
+            headers: { 
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            body: JSON.stringify(formData)
+        });
+
+        if (response.ok) {
+            messageBox.textContent = "✅ Thank you! We’ve got your message and our team will respond within 24 hours.";
+            messageBox.style.color = "green";
+            messageBox.style.display = "block";
+            this.reset();
+        } else {
+            messageBox.textContent = "❌ Oops! Something went wrong.";
+            messageBox.style.color = "red";
+            messageBox.style.display = "block";
+        }
+    } catch (error) {
+        console.error("❌ Error:", error);
+        messageBox.textContent = "❌ Error sending message. Please try again.";
+        messageBox.style.color = "red";
+        messageBox.style.display = "block";
+    }
+});
+
+
+/* =========================
+   Currency Auto-Detect + Pay Button Update
+========================== */
 document.addEventListener("DOMContentLoaded", async () => {
     try {
-        // 1. Detect user location (ipapi.co – no key needed)
-        let res = await fetch("https://ipapi.co/json/");
-        let location = await res.json();
-        let countryCode = location.country;
+        // 1. Detect user country
+        let res = await fetch("https://ipwhois.app/json/");
+        let data = await res.json();
+        console.log("🌍 User Location:", data);
 
-        let useNGN = countryCode === "NG"; // Nigeria → NGN
+        let useNGN = data.country_code === "NG";
 
-        // 2. Update Pay buttons with conversion
+        // 2. Update Pay buttons
         const serviceButtons = document.querySelectorAll(".pay-service");
+
         for (let btn of serviceButtons) {
-            let amountUSD = parseFloat(btn.getAttribute("data-amount-usd")) || parseFloat(btn.getAttribute("data-amount"));
-            if (!amountUSD || isNaN(amountUSD)) amountUSD = 100; // fallback
+            let amountUSD = parseFloat(btn.getAttribute("data-amount-usd")) || 100;
 
             if (useNGN) {
-                // Convert USD → NGN using exchangerate.host
+                // Convert USD → NGN
                 let rateRes = await fetch(`https://api.exchangerate.host/convert?from=USD&to=NGN&amount=${amountUSD}`);
                 let rateData = await rateRes.json();
                 let amountNGN = Math.round(rateData.result || amountUSD * 1600); // fallback rate
@@ -509,10 +556,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     } catch (err) {
         console.error("🌍 Location detect failed:", err);
 
-        // Fallback: force NGN
+        // fallback to NGN conversion
         document.querySelectorAll(".pay-service").forEach(btn => {
             let amountUSD = parseFloat(btn.getAttribute("data-amount-usd")) || 100;
-            let amountNGN = Math.round(amountUSD * 1600); // fixed fallback rate
+            let amountNGN = Math.round(amountUSD * 1600);
             btn.setAttribute("data-amount", amountNGN);
             btn.setAttribute("data-currency", "NGN");
             btn.textContent = `Pay ₦${amountNGN.toLocaleString()}`;
@@ -520,7 +567,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 });
 
-// 3. Checkout handler
+/* =========================
+   Flutterwave Checkout Handler
+========================== */
 document.addEventListener("click", (e) => {
     if (e.target.classList.contains("pay-service")) {
         const button = e.target;
@@ -528,6 +577,7 @@ document.addEventListener("click", (e) => {
         const amount = parseFloat(button.getAttribute("data-amount"));
         const currency = button.getAttribute("data-currency") || "USD";
 
+        // Block large USD payments (Flutterwave restriction)
         if (currency === "USD" && amount > 1000) {
             alert("⚠️ This package must be paid in NGN due to Flutterwave USD limits.");
             return;
@@ -557,7 +607,8 @@ document.addEventListener("click", (e) => {
         });
     }
 });
-</script>
+    </script>
+
 
 
     <script src="scripts/main.js"></script>
