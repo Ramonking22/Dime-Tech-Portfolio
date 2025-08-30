@@ -471,31 +471,26 @@ document.getElementById("contactForm").addEventListener("submit", async function
         messageBox.style.display = "block";
     }
 });
-</script>
 
-    <script src="scripts/main.js"></script>
-
-    <!-- Flutterwave Payment Script -->
+        
 <script>
 document.addEventListener("DOMContentLoaded", async () => {
     try {
-        // Detect location
+        // 1. Detect user location
         let res = await fetch("https://ipapi.co/json/");
         let location = await res.json();
         let countryCode = location.country_code;
 
-        let useNGN = countryCode === "NG";
+        let useNGN = countryCode === "NG"; // Nigeria → use NGN, otherwise USD
 
-        // Update buttons dynamically
+        // 2. Update all Pay buttons
         const serviceButtons = document.querySelectorAll(".pay-service");
-        serviceButtons.forEach(async (btn) => {
+        for (let btn of serviceButtons) {
             let amountUSD = parseFloat(btn.getAttribute("data-amount-usd")) || parseFloat(btn.getAttribute("data-amount"));
-            
-            // Always keep original USD safe
-            btn.setAttribute("data-amount-usd", amountUSD);
+            btn.setAttribute("data-amount-usd", amountUSD); // keep safe
 
             if (useNGN) {
-                // convert USD → NGN
+                // Convert USD → NGN
                 let rateRes = await fetch(`https://api.exchangerate.host/convert?from=USD&to=NGN&amount=${amountUSD}`);
                 let rateData = await rateRes.json();
                 let amountNGN = Math.round(rateData.result);
@@ -508,15 +503,16 @@ document.addEventListener("DOMContentLoaded", async () => {
                 btn.setAttribute("data-currency", "USD");
                 btn.textContent = `Pay $${amountUSD}`;
             }
-        });
+        }
     } catch (err) {
-        console.error("Location detect failed:", err);
+        console.error("🌍 Location detect failed:", err);
     }
 });
 
-// Handle payments
-document.querySelectorAll(".pay-service").forEach(button => {
-    button.addEventListener("click", () => {
+// 3. Handle payment checkout
+document.addEventListener("click", (e) => {
+    if (e.target.classList.contains("pay-service")) {
+        const button = e.target;
         const serviceName = button.getAttribute("data-service");
         const amount = parseFloat(button.getAttribute("data-amount"));
         const currency = button.getAttribute("data-currency") || "USD";
@@ -548,7 +544,7 @@ document.querySelectorAll(".pay-service").forEach(button => {
                 console.log("Payment closed.");
             }
         });
-    });
+    }
 });
 </script>
 
