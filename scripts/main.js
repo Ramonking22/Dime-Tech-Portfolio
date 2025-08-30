@@ -163,7 +163,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 public_key: "FLWPUBK-5371eca8e52f6277d44f696effabbdf7-X", // ⚠️ Replace with your live/public key
                 tx_ref: "tx_" + Date.now(),
                 amount: amount,
-                currency: "NGN",
+                currency: "USD",
                 payment_options: "card, banktransfer, ussd",
                 customer: { email, name },
                 callback: function (response) {
