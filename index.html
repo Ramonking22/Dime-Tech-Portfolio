@@ -476,24 +476,24 @@ document.getElementById("contactForm").addEventListener("submit", async function
 <script>
 document.addEventListener("DOMContentLoaded", async () => {
     try {
-        // 1. Detect user location
+        // 1. Detect user location (ipapi.co – no key needed)
         let res = await fetch("https://ipapi.co/json/");
         let location = await res.json();
-        let countryCode = location.country_code;
+        let countryCode = location.country;
 
-        let useNGN = countryCode === "NG"; // Nigeria → use NGN, otherwise USD
+        let useNGN = countryCode === "NG"; // Nigeria → NGN
 
-        // 2. Update all Pay buttons
+        // 2. Update Pay buttons with conversion
         const serviceButtons = document.querySelectorAll(".pay-service");
         for (let btn of serviceButtons) {
             let amountUSD = parseFloat(btn.getAttribute("data-amount-usd")) || parseFloat(btn.getAttribute("data-amount"));
-            btn.setAttribute("data-amount-usd", amountUSD); // keep safe
+            if (!amountUSD || isNaN(amountUSD)) amountUSD = 100; // fallback
 
             if (useNGN) {
-                // Convert USD → NGN
+                // Convert USD → NGN using exchangerate.host
                 let rateRes = await fetch(`https://api.exchangerate.host/convert?from=USD&to=NGN&amount=${amountUSD}`);
                 let rateData = await rateRes.json();
-                let amountNGN = Math.round(rateData.result);
+                let amountNGN = Math.round(rateData.result || amountUSD * 1600); // fallback rate
 
                 btn.setAttribute("data-amount", amountNGN);
                 btn.setAttribute("data-currency", "NGN");
@@ -506,10 +506,19 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     } catch (err) {
         console.error("🌍 Location detect failed:", err);
+
+        // Fallback: force NGN
+        document.querySelectorAll(".pay-service").forEach(btn => {
+            let amountUSD = parseFloat(btn.getAttribute("data-amount-usd")) || 100;
+            let amountNGN = Math.round(amountUSD * 1600); // fixed fallback rate
+            btn.setAttribute("data-amount", amountNGN);
+            btn.setAttribute("data-currency", "NGN");
+            btn.textContent = `Pay ₦${amountNGN.toLocaleString()}`;
+        });
     }
 });
 
-// 3. Handle payment checkout
+// 3. Checkout handler
 document.addEventListener("click", (e) => {
     if (e.target.classList.contains("pay-service")) {
         const button = e.target;
