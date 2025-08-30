@@ -463,62 +463,70 @@ document.getElementById("contactForm").addEventListener("submit", async function
     <script src="scripts/main.js"></script>
 
     <!-- Flutterwave Payment Script -->
-   <script>
-const buttons = document.querySelectorAll(".pay-service");
+  <script>
+// Run when page loads
+document.addEventListener("DOMContentLoaded", async () => {
+    try {
+        // 1. Detect location
+        let res = await fetch("https://ipapi.co/json/");
+        let location = await res.json();
+        let countryCode = location.country_code;
 
-buttons.forEach(btn => {
-    btn.addEventListener("click", async function () {
-        let amountUSD = this.getAttribute("data-amount");
-        let service = this.getAttribute("data-service");
+        // 2. Decide currency
+        let useNGN = countryCode === "NG";
 
-        try {
-            // 1. Detect user country via IP (free API)
-            let res = await fetch("https://ipapi.co/json/");
-            let location = await res.json();
-            let country = location.country_name;
-            let currency = "USD"; // default
-            let amountFinal = amountUSD;
-
-            // 2. If user is in Nigeria, convert to NGN
-            if (location.country_code === "NG") {
-                currency = "NGN";
-
-                // Get live conversion rate USD→NGN (using exchangerate.host API)
-                let rateRes = await fetch("https://api.exchangerate.host/convert?from=USD&to=NGN&amount=" + amountUSD);
+        // 3. Update all buttons dynamically
+        const serviceButtons = document.querySelectorAll(".pay-service");
+        serviceButtons.forEach(async (btn) => {
+            let amountUSD = btn.getAttribute("data-amount");
+            if (useNGN) {
+                // convert USD → NGN
+                let rateRes = await fetch(`https://api.exchangerate.host/convert?from=USD&to=NGN&amount=${amountUSD}`);
                 let rateData = await rateRes.json();
-                amountFinal = rateData.result.toFixed(2);
+                let amountNGN = Math.round(rateData.result);
+
+                btn.setAttribute("data-amount", amountNGN);
+                btn.setAttribute("data-currency", "NGN");
+                btn.textContent = `Pay ₦${amountNGN.toLocaleString()}`;
+            } else {
+                btn.setAttribute("data-currency", "USD");
+                btn.textContent = `Pay $${amountUSD}`;
             }
+        });
+    } catch (err) {
+        console.error("Location detect failed:", err);
+    }
+});
 
-            // 3. Launch Flutterwave Checkout
-            FlutterwaveCheckout({
-                public_key: "FLWPUBK-5371eca8e52f6277d44f696effabbdf7-X", // replace with your real key
-                tx_ref: "DimeTech_" + Date.now(),
-                amount: amountFinal,
-                currency: currency,
-                payment_options: "card, mobilemoney, ussd",
-                customer: {
-                    email: "customer@example.com",
-                    phonenumber: "08012345678",
-                    name: "DimeTech Client",
-                },
-                customizations: {
-                    title: "DimeTech Agency",
-                    description: "Payment for " + service + " package",
-                    logo: "https://ramonking22.github.io/Dime-Tech-Portfolio/images/dimetech_preview.jpg",
-                },
-                callback: function (data) {
-                    console.log(data);
-                    alert("✅ Payment Successful for " + service + "!");
-                },
-                onclose: function () {
-                    alert("Payment closed. No charges made.");
-                }
-            });
+// Handle payments
+document.querySelectorAll(".pay-service").forEach(button => {
+    button.addEventListener("click", () => {
+        const serviceName = button.getAttribute("data-service");
+        const amount = parseFloat(button.getAttribute("data-amount"));
+        const currency = button.getAttribute("data-currency") || "USD";
 
-        } catch (err) {
-            console.error("Currency detection failed:", err);
-            alert("❌ Could not detect location. Please try again.");
-        }
+        FlutterwaveCheckout({
+            public_key: "FLWPUBK-5371eca8e52f6277d44f696effabbdf7-X",
+            tx_ref: "DimeTech_" + Date.now(),
+            amount: amount,
+            currency: currency,
+            payment_options: "card, banktransfer, ussd",
+            customer: {
+                email: "dimetechacademy@gmail.com",
+                name: "DimeTech Client"
+            },
+            customizations: {
+                title: "DimeTech Agency",
+                description: "Payment for " + serviceName + " package",
+                logo: "https://ramonking22.github.io/Dime-Tech-Portfolio/images/dimetech_preview.jpg"
+            },
+            callback: function (data) {
+                alert("✅ Payment Successful for " + serviceName + "!");
+            },
+            onclose: function () {
+                console.log("Payment closed.");
+            }
+        });
     });
 });
 </script>
