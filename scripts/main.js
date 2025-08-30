@@ -152,113 +152,88 @@ document.addEventListener("DOMContentLoaded", () => {
 ========================== */
 
 /* =========================
-   Currency Detection + Flutterwave Payment
+   Currency Selector + Auto Detect
 ========================== */
+const currencySelector = document.getElementById("currency");
+let selectedCurrency = "USD"; // default
 
-let usdToNgnRate = null;
-let userCurrency = "USD"; // default
-let userCountry = "INTL"; // default
-
-// 1. Fetch NGN conversion rate
-async function fetchRate() {
+// Detect user location if Auto selected
+async function detectCurrency() {
     try {
-        const res = await fetch("https://api.exchangerate.host/convert?from=USD&to=NGN");
+        const res = await fetch("https://ipapi.co/json/");
         const data = await res.json();
-        if (data && data.result) {
-            usdToNgnRate = data.result;
+        if (data && data.country_code === "NG") {
+            return "NGN";
         }
+        return "USD";
     } catch (err) {
-        console.error("Failed to fetch conversion rate:", err);
+        console.error("Location detection failed:", err);
+        return "USD"; // fallback
     }
 }
 
-// 2. Detect user location
-async function detectLocation() {
-    try {
-        const res = await fetch("https://ipapi.co/json/"); // free IP location API
-        const data = await res.json();
-        if (data && data.country_code) {
-            userCountry = data.country_code;
-            if (userCountry === "NG") {
-                userCurrency = "NGN";
-            } else {
-                userCurrency = "USD";
-            }
-        }
-    } catch (err) {
-        console.error("Failed to detect location:", err);
+// Convert prices dynamically
+async function updatePrices() {
+    let currency = currencySelector.value;
+
+    if (currency === "auto") {
+        currency = await detectCurrency();
     }
-}
+    selectedCurrency = currency;
 
-// 3. Initialize (fetch rate + location before updating buttons)
-async function initPayments() {
-    await Promise.all([fetchRate(), detectLocation()]);
+    document.querySelectorAll(".pay-service").forEach(btn => {
+        const baseAmount = parseInt(btn.getAttribute("data-amount"), 10);
+        const priceTag = btn.parentElement.querySelector(".price-tag");
 
-    const serviceButtons = document.querySelectorAll(".pay-service");
-    serviceButtons.forEach(button => {
-        const amountUSD = parseInt(button.getAttribute("data-amount"), 10);
-
-        let displayLabel = "";
-
-        if (userCurrency === "NGN") {
-            if (usdToNgnRate) {
-                displayLabel = `Pay ₦${Math.round(amountUSD * usdToNgnRate).toLocaleString()}`;
-            } else {
-                displayLabel = "Pay NGN (loading...)";
-            }
+        if (currency === "NGN") {
+            // Convert using a fixed rate for now (you can replace with API)
+            const ngnAmount = Math.round(baseAmount * 1500); // example: 1 USD = ₦1500
+            priceTag.textContent = `₦${ngnAmount.toLocaleString()}`;
+            btn.setAttribute("data-final-amount", ngnAmount);
         } else {
-            if (amountUSD > 1000 && usdToNgnRate) {
-                displayLabel = `Pay ₦${Math.round(amountUSD * usdToNgnRate).toLocaleString()}`;
-            } else {
-                displayLabel = `Pay $${amountUSD}`;
-            }
+            priceTag.textContent = `$${baseAmount}`;
+            btn.setAttribute("data-final-amount", baseAmount);
         }
-
-        button.textContent = displayLabel;
-
-        // Payment handler
-        button.addEventListener("click", async () => {
-            let currency = userCurrency;
-            let amount = amountUSD;
-
-            if (currency === "NGN" || amountUSD > 1000) {
-                if (!usdToNgnRate) {
-                    await fetchRate();
-                }
-                if (usdToNgnRate) {
-                    currency = "NGN";
-                    amount = Math.round(amountUSD * usdToNgnRate);
-                } else {
-                    alert("❌ Could not fetch conversion rate. Try again.");
-                    return;
-                }
-            }
-
-            const name = document.getElementById("name")?.value.trim() || "DimeTech Client";
-            const email = document.getElementById("email")?.value.trim() || "dimetechacademy@gmail.com";
-
-            FlutterwaveCheckout({
-                public_key: "FLWPUBK-5371eca8e52f6277d44f696effabbdf7-X",
-                tx_ref: "tx_" + Date.now(),
-                amount: amount,
-                currency: currency,
-                payment_options: "card, banktransfer, ussd",
-                customer: { email, name },
-                callback: function (response) {
-                    console.log("Payment response:", response);
-                    if (response.status && response.status.toLowerCase().includes("success")) {
-                        alert(`🎉 Payment Successful for ${button.getAttribute("data-service")}!`);
-                    } else {
-                        alert("❌ Payment Failed: " + response.status);
-                    }
-                },
-                onclose: function () {
-                    console.log("Payment modal closed.");
-                }
-            });
-        });
     });
 }
 
-// Run everything
-initPayments();
+// Listen for manual currency change
+if (currencySelector) {
+    currencySelector.addEventListener("change", updatePrices);
+}
+
+// Run once on page load
+updatePrices();
+
+/* =========================
+   Override Payment Buttons
+========================== */
+document.querySelectorAll(".pay-service").forEach(button => {
+    button.addEventListener("click", async () => {
+        const serviceName = button.getAttribute("data-service");
+        const amount = parseInt(button.getAttribute("data-final-amount"), 10);
+
+        const name = document.getElementById("name")?.value.trim() || "DimeTech Client";
+        const email = document.getElementById("email")?.value.trim() || "dimetechacademy@gmail.com";
+
+        FlutterwaveCheckout({
+            public_key: "FLWPUBK-5371eca8e52f6277d44f696effabbdf7-X",
+            tx_ref: "tx_" + Date.now(),
+            amount: amount,
+            currency: selectedCurrency,
+            payment_options: "card, banktransfer, ussd",
+            customer: { email, name },
+            callback: function (response) {
+                console.log("Payment response:", response);
+                if (response.status && response.status.toLowerCase().includes("success")) {
+                    alert(`🎉 Payment Successful for ${serviceName}!`);
+                } else {
+                    alert("❌ Payment Failed: " + response.status);
+                }
+            },
+            onclose: function () {
+                console.log("Payment modal closed.");
+            }
+        });
+    });
+});
