@@ -151,61 +151,114 @@ document.addEventListener("DOMContentLoaded", () => {
    Flutterwave Payment with Auto Currency
 ========================== */
 
-// Detect currency by browser locale
-function detectCurrency() {
-    const userLang = navigator.language || navigator.userLanguage;
-    return userLang.includes("NG") ? "NGN" : "USD";
-}
+/* =========================
+   Currency Detection + Flutterwave Payment
+========================== */
 
-// Convert USD amount to local currency if needed
-async function convertAmount(amountUSD, currency) {
-    if (currency === "USD") return amountUSD;
+let usdToNgnRate = null;
+let userCurrency = "USD"; // default
+let userCountry = "INTL"; // default
 
+// 1. Fetch NGN conversion rate
+async function fetchRate() {
     try {
-        const res = await fetch(`https://api.exchangerate.host/convert?from=USD&to=${currency}&amount=${amountUSD}`);
+        const res = await fetch("https://api.exchangerate.host/convert?from=USD&to=NGN");
         const data = await res.json();
-        if (data.result) {
-            return Math.round(data.result); // round to nearest whole number
-        } else {
-            console.warn("⚠️ Conversion failed, using USD fallback.");
-            return amountUSD;
+        if (data && data.result) {
+            usdToNgnRate = data.result;
         }
     } catch (err) {
-        console.error("❌ Conversion error:", err);
-        return amountUSD; // fallback
+        console.error("Failed to fetch conversion rate:", err);
     }
 }
 
-const serviceButtons = document.querySelectorAll(".pay-service");
-serviceButtons.forEach(button => {
-    button.addEventListener("click", async () => {
-        const serviceName = button.getAttribute("data-service");
+// 2. Detect user location
+async function detectLocation() {
+    try {
+        const res = await fetch("https://ipapi.co/json/"); // free IP location API
+        const data = await res.json();
+        if (data && data.country_code) {
+            userCountry = data.country_code;
+            if (userCountry === "NG") {
+                userCurrency = "NGN";
+            } else {
+                userCurrency = "USD";
+            }
+        }
+    } catch (err) {
+        console.error("Failed to detect location:", err);
+    }
+}
+
+// 3. Initialize (fetch rate + location before updating buttons)
+async function initPayments() {
+    await Promise.all([fetchRate(), detectLocation()]);
+
+    const serviceButtons = document.querySelectorAll(".pay-service");
+    serviceButtons.forEach(button => {
         const amountUSD = parseInt(button.getAttribute("data-amount"), 10);
 
-        const name = document.getElementById("name")?.value.trim() || "DimeTech Client";
-        const email = document.getElementById("email")?.value.trim() || "dimetechacademy@gmail.com";
+        let displayLabel = "";
 
-        const currency = detectCurrency();
-        const amount = await convertAmount(amountUSD, currency);
-
-        FlutterwaveCheckout({
-            public_key: "FLWPUBK-5371eca8e52f6277d44f696effabbdf7-X", // ⚠️ Replace with live/public key
-            tx_ref: "tx_" + Date.now(),
-            amount: amount,
-            currency: currency,
-            payment_options: "card, banktransfer, ussd",
-            customer: { email, name },
-            callback: function (response) {
-                console.log("Payment response:", response);
-                if (response.status && response.status.toLowerCase().includes("success")) {
-                    alert(`🎉 Payment Successful for ${serviceName}!`);
-                } else {
-                    alert("❌ Payment Failed: " + response.status);
-                }
-            },
-            onclose: function () {
-                console.log("Payment modal closed.");
+        if (userCurrency === "NGN") {
+            if (usdToNgnRate) {
+                displayLabel = `Pay ₦${Math.round(amountUSD * usdToNgnRate).toLocaleString()}`;
+            } else {
+                displayLabel = "Pay NGN (loading...)";
             }
+        } else {
+            if (amountUSD > 1000 && usdToNgnRate) {
+                displayLabel = `Pay ₦${Math.round(amountUSD * usdToNgnRate).toLocaleString()}`;
+            } else {
+                displayLabel = `Pay $${amountUSD}`;
+            }
+        }
+
+        button.textContent = displayLabel;
+
+        // Payment handler
+        button.addEventListener("click", async () => {
+            let currency = userCurrency;
+            let amount = amountUSD;
+
+            if (currency === "NGN" || amountUSD > 1000) {
+                if (!usdToNgnRate) {
+                    await fetchRate();
+                }
+                if (usdToNgnRate) {
+                    currency = "NGN";
+                    amount = Math.round(amountUSD * usdToNgnRate);
+                } else {
+                    alert("❌ Could not fetch conversion rate. Try again.");
+                    return;
+                }
+            }
+
+            const name = document.getElementById("name")?.value.trim() || "DimeTech Client";
+            const email = document.getElementById("email")?.value.trim() || "dimetechacademy@gmail.com";
+
+            FlutterwaveCheckout({
+                public_key: "FLWPUBK-5371eca8e52f6277d44f696effabbdf7-X",
+                tx_ref: "tx_" + Date.now(),
+                amount: amount,
+                currency: currency,
+                payment_options: "card, banktransfer, ussd",
+                customer: { email, name },
+                callback: function (response) {
+                    console.log("Payment response:", response);
+                    if (response.status && response.status.toLowerCase().includes("success")) {
+                        alert(`🎉 Payment Successful for ${button.getAttribute("data-service")}!`);
+                    } else {
+                        alert("❌ Payment Failed: " + response.status);
+                    }
+                },
+                onclose: function () {
+                    console.log("Payment modal closed.");
+                }
+            });
         });
     });
-});
+}
+
+// Run everything
+initPayments();
