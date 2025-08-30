@@ -457,8 +457,6 @@ document.getElementById("contactForm").addEventListener("submit", async function
 });
 </script>
 
-    <script src="scripts/main.js"></script>
-
     <!-- Flutterwave Payment Script -->
     <script>
     const buttons = document.querySelectorAll(".pay-service");
@@ -469,7 +467,7 @@ document.getElementById("contactForm").addEventListener("submit", async function
             const service = this.getAttribute("data-service");
 
             FlutterwaveCheckout({
-                public_key: "FLWPUBK_TEST-xxxxxxxxxxxxxxxxxxxxxxx-X", // Replace with your Flutterwave Public Key
+                public_key: "FLWPUBK-5371eca8e52f6277d44f696effabbdf7-X", // Replace with your Flutterwave Public Key
                 tx_ref: "DimeTech_" + Date.now(),
                 amount: amount,
                 currency: "USD",
@@ -524,6 +522,6 @@ Tawk_API.onLoad = function(){
 })();
 </script>
 <!--End of Tawk.to Script-->
-
+<script src="scripts/main.js"></script>
 </body>
 </html>
