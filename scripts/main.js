@@ -150,70 +150,66 @@ document.addEventListener("DOMContentLoaded", () => {
   /* =========================
    Flutterwave Payment with Auto Currency
 ========================== */
-
 /* =========================
-   Currency Selector + Auto Detect (using ipwhois.app)
+   Auto Currency + Flutterwave Checkout
 ========================== */
-const currencySelector = document.getElementById("currency");
+
 let selectedCurrency = "USD"; // default
 
-// Detect user location if Auto selected
 async function detectCurrency() {
     try {
         const res = await fetch("https://ipwhois.app/json/");
         const data = await res.json();
-        console.log("Location data:", data);
-
-        if (data && data.country_code === "NG") {
-            return "NGN";
-        }
+        console.log("User Location:", data);
+        if (data && data.country_code === "NG") return "NGN";
         return "USD";
     } catch (err) {
-        console.error("Location detection failed:", err);
+        console.error("Currency detection failed:", err);
         return "USD"; // fallback
     }
 }
 
-// Convert prices dynamically
-async function updatePrices() {
-    let currency = currencySelector ? currencySelector.value : "auto";
+async function updatePayButtons() {
+    selectedCurrency = await detectCurrency();
+    const buttons = document.querySelectorAll(".pay-service");
 
-    if (currency === "auto") {
-        currency = await detectCurrency();
-    }
-    selectedCurrency = currency;
+    buttons.forEach(btn => {
+        const baseUSD = parseFloat(btn.getAttribute("data-amount-usd")) || 100;
+        let finalAmount = baseUSD;
 
-    document.querySelectorAll(".pay-service").forEach(btn => {
-        const baseAmount = parseInt(btn.getAttribute("data-amount"), 10);
-        const priceTag = btn.parentElement.querySelector(".price-tag");
-
-        if (currency === "NGN") {
-            // Example conversion rate: 1 USD = ₦1500 (replace with API if needed)
-            const ngnAmount = Math.round(baseAmount * 1500);
-            priceTag.textContent = `₦${ngnAmount.toLocaleString()}`;
-            btn.setAttribute("data-final-amount", ngnAmount);
+        if (selectedCurrency === "NGN") {
+            // Example conversion rate 1 USD = ₦1500
+            finalAmount = Math.round(baseUSD * 1500);
+            btn.textContent = `Pay ₦${finalAmount.toLocaleString()}`;
         } else {
-            priceTag.textContent = `$${baseAmount}`;
-            btn.setAttribute("data-final-amount", baseAmount);
+            btn.textContent = `Pay $${baseUSD}`;
         }
+
+        btn.setAttribute("data-final-amount", finalAmount);
+        btn.setAttribute("data-currency", selectedCurrency);
     });
 }
 
-// Listen for manual currency change
+// Run once on page load
+updatePayButtons();
+
+// Optional: allow manual currency selector override
+const currencySelector = document.getElementById("currency");
 if (currencySelector) {
-    currencySelector.addEventListener("change", updatePrices);
+    currencySelector.addEventListener("change", async () => {
+        let currency = currencySelector.value;
+        if (currency === "auto") currency = await detectCurrency();
+        selectedCurrency = currency;
+        updatePayButtons();
+    });
 }
 
-// Run once on page load
-updatePrices();
-
-/* =========================
-   Override Payment Buttons
-========================== */
+// Flutterwave Checkout
 document.querySelectorAll(".pay-service").forEach(button => {
-    button.addEventListener("click", async () => {
+    button.addEventListener("click", () => {
         const serviceName = button.getAttribute("data-service");
-        const amount = parseInt(button.getAttribute("data-final-amount"), 10);
+        const amount = parseFloat(button.getAttribute("data-final-amount"));
+        const currency = button.getAttribute("data-currency") || "USD";
 
         const name = document.getElementById("name")?.value.trim() || "DimeTech Client";
         const email = document.getElementById("email")?.value.trim() || "dimetechacademy@gmail.com";
@@ -221,10 +217,15 @@ document.querySelectorAll(".pay-service").forEach(button => {
         FlutterwaveCheckout({
             public_key: "FLWPUBK-5371eca8e52f6277d44f696effabbdf7-X",
             tx_ref: "tx_" + Date.now(),
-            amount: amount,
-            currency: selectedCurrency,
+            amount,
+            currency,
             payment_options: "card, banktransfer, ussd",
             customer: { email, name },
+            customizations: {
+                title: "DimeTech Agency",
+                description: `Payment for ${serviceName} package`,
+                logo: "https://ramonking22.github.io/Dime-Tech-Portfolio/images/dimetech_preview.jpg"
+            },
             callback: function (response) {
                 console.log("Payment response:", response);
                 if (response.status && response.status.toLowerCase().includes("success")) {
@@ -239,3 +240,4 @@ document.querySelectorAll(".pay-service").forEach(button => {
         });
     });
 });
+
