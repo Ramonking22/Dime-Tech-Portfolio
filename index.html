@@ -463,19 +463,38 @@ document.getElementById("contactForm").addEventListener("submit", async function
     <script src="scripts/main.js"></script>
 
     <!-- Flutterwave Payment Script -->
-    <script>
-    const buttons = document.querySelectorAll(".pay-service");
+   <script>
+const buttons = document.querySelectorAll(".pay-service");
 
-    buttons.forEach(btn => {
-        btn.addEventListener("click", function () {
-            const amount = this.getAttribute("data-amount");
-            const service = this.getAttribute("data-service");
+buttons.forEach(btn => {
+    btn.addEventListener("click", async function () {
+        let amountUSD = this.getAttribute("data-amount");
+        let service = this.getAttribute("data-service");
 
+        try {
+            // 1. Detect user country via IP (free API)
+            let res = await fetch("https://ipapi.co/json/");
+            let location = await res.json();
+            let country = location.country_name;
+            let currency = "USD"; // default
+            let amountFinal = amountUSD;
+
+            // 2. If user is in Nigeria, convert to NGN
+            if (location.country_code === "NG") {
+                currency = "NGN";
+
+                // Get live conversion rate USD→NGN (using exchangerate.host API)
+                let rateRes = await fetch("https://api.exchangerate.host/convert?from=USD&to=NGN&amount=" + amountUSD);
+                let rateData = await rateRes.json();
+                amountFinal = rateData.result.toFixed(2);
+            }
+
+            // 3. Launch Flutterwave Checkout
             FlutterwaveCheckout({
-                public_key: "FLWPUBK-5371eca8e52f6277d44f696effabbdf7-X", // Replace with your Flutterwave Public Key
+                public_key: "FLWPUBK-5371eca8e52f6277d44f696effabbdf7-X", // replace with your real key
                 tx_ref: "DimeTech_" + Date.now(),
-                amount: amount,
-                currency: "USD",
+                amount: amountFinal,
+                currency: currency,
                 payment_options: "card, mobilemoney, ussd",
                 customer: {
                     email: "customer@example.com",
@@ -495,9 +514,15 @@ document.getElementById("contactForm").addEventListener("submit", async function
                     alert("Payment closed. No charges made.");
                 }
             });
-        });
+
+        } catch (err) {
+            console.error("Currency detection failed:", err);
+            alert("❌ Could not detect location. Please try again.");
+        }
     });
-    </script>
+});
+</script>
+
 
     <script src="scripts/main.js"></script>
     
