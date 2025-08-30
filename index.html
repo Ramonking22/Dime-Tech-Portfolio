@@ -476,22 +476,24 @@ document.getElementById("contactForm").addEventListener("submit", async function
     <script src="scripts/main.js"></script>
 
     <!-- Flutterwave Payment Script -->
-  <script>
-// Run when page loads
+<script>
 document.addEventListener("DOMContentLoaded", async () => {
     try {
-        // 1. Detect location
+        // Detect location
         let res = await fetch("https://ipapi.co/json/");
         let location = await res.json();
         let countryCode = location.country_code;
 
-        // 2. Decide currency
         let useNGN = countryCode === "NG";
 
-        // 3. Update all buttons dynamically
+        // Update buttons dynamically
         const serviceButtons = document.querySelectorAll(".pay-service");
         serviceButtons.forEach(async (btn) => {
-            let amountUSD = btn.getAttribute("data-amount");
+            let amountUSD = parseFloat(btn.getAttribute("data-amount-usd")) || parseFloat(btn.getAttribute("data-amount"));
+            
+            // Always keep original USD safe
+            btn.setAttribute("data-amount-usd", amountUSD);
+
             if (useNGN) {
                 // convert USD → NGN
                 let rateRes = await fetch(`https://api.exchangerate.host/convert?from=USD&to=NGN&amount=${amountUSD}`);
@@ -502,6 +504,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 btn.setAttribute("data-currency", "NGN");
                 btn.textContent = `Pay ₦${amountNGN.toLocaleString()}`;
             } else {
+                btn.setAttribute("data-amount", amountUSD);
                 btn.setAttribute("data-currency", "USD");
                 btn.textContent = `Pay $${amountUSD}`;
             }
@@ -517,6 +520,11 @@ document.querySelectorAll(".pay-service").forEach(button => {
         const serviceName = button.getAttribute("data-service");
         const amount = parseFloat(button.getAttribute("data-amount"));
         const currency = button.getAttribute("data-currency") || "USD";
+
+        if (currency === "USD" && amount > 1000) {
+            alert("⚠️ This package must be paid in NGN due to Flutterwave USD limits.");
+            return;
+        }
 
         FlutterwaveCheckout({
             public_key: "FLWPUBK-5371eca8e52f6277d44f696effabbdf7-X",
