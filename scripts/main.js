@@ -152,7 +152,7 @@ document.addEventListener("DOMContentLoaded", () => {
 ========================== */
 
 /* =========================
-   Currency Selector + Auto Detect
+   Currency Selector + Auto Detect (using ipwhois.app)
 ========================== */
 const currencySelector = document.getElementById("currency");
 let selectedCurrency = "USD"; // default
@@ -160,8 +160,10 @@ let selectedCurrency = "USD"; // default
 // Detect user location if Auto selected
 async function detectCurrency() {
     try {
-        const res = await fetch("https://ipapi.co/json/");
+        const res = await fetch("https://ipwhois.app/json/");
         const data = await res.json();
+        console.log("Location data:", data);
+
         if (data && data.country_code === "NG") {
             return "NGN";
         }
@@ -174,7 +176,7 @@ async function detectCurrency() {
 
 // Convert prices dynamically
 async function updatePrices() {
-    let currency = currencySelector.value;
+    let currency = currencySelector ? currencySelector.value : "auto";
 
     if (currency === "auto") {
         currency = await detectCurrency();
@@ -186,8 +188,8 @@ async function updatePrices() {
         const priceTag = btn.parentElement.querySelector(".price-tag");
 
         if (currency === "NGN") {
-            // Convert using a fixed rate for now (you can replace with API)
-            const ngnAmount = Math.round(baseAmount * 1500); // example: 1 USD = ₦1500
+            // Example conversion rate: 1 USD = ₦1500 (replace with API if needed)
+            const ngnAmount = Math.round(baseAmount * 1500);
             priceTag.textContent = `₦${ngnAmount.toLocaleString()}`;
             btn.setAttribute("data-final-amount", ngnAmount);
         } else {
