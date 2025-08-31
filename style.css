@@ -412,7 +412,7 @@ a:hover {
     gap: 18px;
 }
 .chat-bubble.left { margin-right: auto; }
-.chat-bubble.right { margin-right: auto; }
+
 .chat-avatar {
     width: 56px;
     height: 56px;
