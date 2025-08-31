@@ -411,7 +411,7 @@ a:hover {
     max-width: 600px;
     gap: 18px;
 }
-.chat-bubble.left { margin-right: auto; }
+.chat-bubble.left { margin-left: auto; }
 .chat-bubble.right { margin-left: auto; flex-direction: row-reverse; }
 .chat-avatar {
     width: 56px;
