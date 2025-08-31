@@ -3,146 +3,265 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DimeTech Agency – Shopify Experts</title>
-  <link rel="stylesheet" href="style.css">
-
-  <!-- Flutterwave SDK -->
-  <script src="https://checkout.flutterwave.com/v3.js"></script>
+  <title>Abass Agency – Shopify Experts</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <!-- ================== Navbar ================== -->
-  <header class="navbar">
-    <div class="logo">DimeTech</div>
-    <nav class="navbar-links">
-      <a href="#services">Services</a>
-      <a href="#work">Our Work</a>
-      <a href="#testimonials">Testimonials</a>
-      <a href="#faq">FAQ</a>
-      <a href="#contact">Contact</a>
+  <!-- Header -->
+  <header>
+    <nav>
+      <div class="logo">Abass Agency</div>
+      <ul>
+        <li><a href="#home">Home</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#work">Our Work</a></li>
+        <li><a href="#testimonials">Testimonials</a></li>
+        <li><a href="#blog">Blog</a></li>
+        <li><a href="#faq">FAQ</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
     </nav>
-    <div class="menu-toggle">
-      <span></span><span></span><span></span>
-    </div>
   </header>
 
-  <!-- ================== Hero Section ================== -->
-  <section class="hero">
-    <div class="hero-content">
-      <h1>We Build High-Converting Shopify Stores</h1>
-      <p>Attract customers. Boost sales. Scale your business.</p>
-      <a href="#services" class="btn">Explore Services</a>
-    </div>
+  <!-- Hero Section -->
+  <section id="home" class="hero">
+    <h1>We Build High-Converting Shopify Stores</h1>
+    <p>Professional design, SEO optimization, and sales-driven solutions.</p>
+    <a href="#services" class="cta-button">Explore Services</a>
   </section>
 
-  <!-- ================== Services ================== -->
-  <section id="services" class="services">
+  <!-- Services -->
+  <section id="services" class="container">
     <h2>Our Services</h2>
-    <div class="service-cards">
+    <div class="service-grid">
       <div class="service-card">
-        <h3>Shopify Store Setup</h3>
-        <p>Complete Shopify store design tailored to your brand.</p>
-        <button class="pay-service" data-service="Shopify Store Setup" data-amount-usd="150">Pay</button>
+        <h3>Shopify Setup</h3>
+        <p>Complete store setup and theme customization tailored to your brand.</p>
       </div>
       <div class="service-card">
-        <h3>Theme Customization</h3>
-        <p>Premium Shopify theme edits and branding.</p>
-        <button class="pay-service" data-service="Theme Customization" data-amount-usd="100">Pay</button>
+        <h3>SEO Optimization</h3>
+        <p>Boost your visibility and attract organic traffic with our SEO solutions.</p>
       </div>
       <div class="service-card">
-        <h3>SEO & Speed Optimization</h3>
-        <p>Rank higher on Google and load faster.</p>
-        <button class="pay-service" data-service="SEO & Speed Optimization" data-amount-usd="80">Pay</button>
+        <h3>Store Revamp</h3>
+        <p>Transform your existing Shopify store into a high-converting machine.</p>
       </div>
     </div>
   </section>
 
-  <!-- ================== Our Work (Slider) ================== -->
-  <section id="work" class="work">
+  <!-- Our Work -->
+  <section id="work" class="container">
     <h2>Our Work</h2>
-    <div class="slider">
-      <button class="slider-btn prev">‹</button>
-      <div class="slides-container">
-        <div class="slides-row">
-          <div class="slide"><img src="images/store1.jpg" alt="Shopify Store 1"></div>
-          <div class="slide"><img src="images/store2.jpg" alt="Shopify Store 2"></div>
-          <div class="slide"><img src="images/store3.jpg" alt="Shopify Store 3"></div>
-          <div class="slide"><img src="images/store4.jpg" alt="Shopify Store 4"></div>
-          <div class="slide"><img src="images/store5.jpg" alt="Shopify Store 5"></div>
-        </div>
-      </div>
-      <button class="slider-btn next">›</button>
+    <div class="work-gallery">
+      <div class="work-card">Project 1</div>
+      <div class="work-card">Project 2</div>
+      <div class="work-card">Project 3</div>
+      <div class="work-card">Project 4</div>
     </div>
   </section>
 
-  <!-- ================== Testimonials ================== -->
-  <section id="testimonials" class="testimonials">
+  <!-- Testimonials (with slider) -->
+  <section id="testimonials" class="container">
     <h2>What Our Clients Say</h2>
-    <div class="testimonial">
-      <p>"DimeTech redesigned my store and sales doubled in a month!"</p>
-      <h4>– Sarah J.</h4>
+    <div class="testimonial-slider">
+      <div class="testimonial-card active">
+        <p>“Abass Agency transformed our Shopify store. Sales skyrocketed!”</p>
+        <h4>— Client A</h4>
+      </div>
+      <div class="testimonial-card">
+        <p>“Professional, reliable, and creative. Highly recommend!”</p>
+        <h4>— Client B</h4>
+      </div>
+      <div class="testimonial-card">
+        <p>“Our store looks amazing, and performance has improved.”</p>
+        <h4>— Client C</h4>
+      </div>
     </div>
-    <div class="testimonial">
-      <p>"Amazing team, quick delivery and very professional."</p>
-      <h4>– Mark A.</h4>
+    <div class="testimonial-nav">
+      <button id="prev">❮</button>
+      <button id="next">❯</button>
     </div>
   </section>
 
-  <!-- ================== FAQ ================== -->
-  <section id="faq" class="faq">
+  <!-- Pricing -->
+  <section id="pricing" class="container">
+    <h2>Pricing Plans</h2>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <h3>Starter</h3>
+        <p class="price">$199</p>
+        <ul>
+          <li>Basic Setup</li>
+          <li>1 Page Design</li>
+          <li>Email Support</li>
+        </ul>
+        <a href="#contact" class="cta-button">Get Started</a>
+      </div>
+      <div class="pricing-card">
+        <h3>Pro</h3>
+        <p class="price">$499</p>
+        <ul>
+          <li>Full Store Setup</li>
+          <li>SEO Optimization</li>
+          <li>Priority Support</li>
+        </ul>
+        <a href="#contact" class="cta-button">Choose Plan</a>
+      </div>
+      <div class="pricing-card">
+        <h3>Premium</h3>
+        <p class="price">$999</p>
+        <ul>
+          <li>Custom Theme</li>
+          <li>Advanced SEO</li>
+          <li>Ongoing Support</li>
+        </ul>
+        <a href="#contact" class="cta-button">Go Premium</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Blog -->
+  <section id="blog" class="container">
+    <h2>Latest Insights</h2>
+    <div class="blog-grid">
+      <div class="blog-card">
+        <h3>Boosting Shopify Sales</h3>
+        <p>Learn proven strategies to increase conversions on your store.</p>
+      </div>
+      <div class="blog-card">
+        <h3>Top Shopify Apps</h3>
+        <p>Discover must-have apps that enhance your Shopify experience.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Team -->
+  <section id="team" class="container">
+    <h2>Meet Our Team</h2>
+    <div class="team-grid">
+      <div class="team-card">
+        <img src="team1.jpg" alt="Team Member 1">
+        <h3>Jane Doe</h3>
+        <p>Lead Developer</p>
+      </div>
+      <div class="team-card">
+        <img src="team2.jpg" alt="Team Member 2">
+        <h3>John Smith</h3>
+        <p>Shopify Expert</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Gallery -->
+  <section id="gallery" class="container">
+    <h2>Our Portfolio</h2>
+    <div class="gallery-grid">
+      <img src="work1.jpg" alt="Project 1">
+      <img src="work2.jpg" alt="Project 2">
+      <img src="work3.jpg" alt="Project 3">
+    </div>
+  </section>
+
+  <!-- About -->
+  <section id="about" class="container">
+    <h2>About Us</h2>
+    <p>Abass Agency specializes in Shopify development, SEO, and store optimization. We help businesses thrive in the digital marketplace.</p>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="container">
     <h2>Frequently Asked Questions</h2>
     <div class="faq-item">
-      <button class="faq-question">
-        How long does it take to build a Shopify store?
-        <span class="faq-icon">+</span>
-      </button>
-      <div class="faq-answer">
-        <p>Most projects take between 1–2 weeks depending on requirements.</p>
-      </div>
+      <div class="faq-question">How long does it take to build a store?</div>
+      <div class="faq-answer">Most projects take 1-2 weeks depending on complexity.</div>
     </div>
     <div class="faq-item">
-      <button class="faq-question">
-        Do you provide ongoing support?
-        <span class="faq-icon">+</span>
-      </button>
-      <div class="faq-answer">
-        <p>Yes, we offer monthly support and maintenance packages.</p>
-      </div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-question">
-        Can you migrate my store from another platform?
-        <span class="faq-icon">+</span>
-      </button>
-      <div class="faq-answer">
-        <p>Absolutely! We migrate stores from WooCommerce, Wix, and others.</p>
-      </div>
+      <div class="faq-question">Do you offer ongoing support?</div>
+      <div class="faq-answer">Yes, we offer monthly support and maintenance plans.</div>
     </div>
   </section>
 
-  <!-- ================== Contact ================== -->
-  <section id="contact" class="contact">
+  <!-- Contact -->
+  <section id="contact" class="container">
     <h2>Contact Us</h2>
-    <form id="contactForm">
-      <input type="text" name="name" id="name" placeholder="Your Name" required>
-      <input type="email" name="email" id="email" placeholder="Your Email" required>
-      <textarea name="message" id="message" placeholder="Your Message" required></textarea>
-      <button type="submit" class="btn">Send Message</button>
+    <form id="contact-form" action="https://formspree.io/f/mjkbpkbb" method="POST">
+      <input type="text" name="name" placeholder="Your Name" required>
+      <input type="email" name="email" placeholder="Your Email" required>
+      <textarea name="message" placeholder="Your Message" required></textarea>
+      <button type="submit">Send Message</button>
     </form>
+    <p id="form-status"></p>
   </section>
 
-  <!-- ================== Footer ================== -->
+  <!-- CTA -->
+  <section class="cta">
+    <h2>Ready to Boost Your Shopify Store?</h2>
+    <a href="#contact" class="cta-button">Let’s Work Together</a>
+  </section>
+
+  <!-- Footer -->
   <footer>
-    <p>© 2025 DimeTech Agency. All Rights Reserved.</p>
+    <p>&copy; 2025 Abass Agency. All rights reserved.</p>
   </footer>
 
-  <!-- ================== Gallery Modal ================== -->
-  <div id="gallery-modal" class="modal">
-    <span id="gallery-close">&times;</span>
-    <img id="gallery-modal-img" alt="Expanded view">
-    <div id="gallery-modal-caption"></div>
-  </div>
+  <!-- Scripts -->
+  <script>
+    // Testimonial Slider
+    const testimonials = document.querySelectorAll('.testimonial-card');
+    let currentIndex = 0;
+    document.getElementById('next').addEventListener('click', () => {
+      testimonials[currentIndex].classList.remove('active');
+      currentIndex = (currentIndex + 1) % testimonials.length;
+      testimonials[currentIndex].classList.add('active');
+    });
+    document.getElementById('prev').addEventListener('click', () => {
+      testimonials[currentIndex].classList.remove('active');
+      currentIndex = (currentIndex - 1 + testimonials.length) % testimonials.length;
+      testimonials[currentIndex].classList.add('active');
+    });
 
-  <!-- ================== Scripts ================== -->
-  <script src="scripts/main.js"></script>
+    // FAQ Toggle
+    document.querySelectorAll('.faq-question').forEach(q => {
+      q.addEventListener('click', () => {
+        q.classList.toggle('active');
+        const answer = q.nextElementSibling;
+        answer.style.display = answer.style.display === 'block' ? 'none' : 'block';
+      });
+    });
+
+    // Contact Form AJAX (Formspree)
+    const form = document.getElementById("contact-form");
+    const status = document.getElementById("form-status");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const data = new FormData(form);
+      const response = await fetch(form.action, {
+        method: form.method,
+        body: data,
+        headers: { 'Accept': 'application/json' }
+      });
+      if (response.ok) {
+        status.textContent = "Thanks for your message!";
+        form.reset();
+      } else {
+        status.textContent = "Oops! There was a problem submitting your form.";
+      }
+    });
+  </script>
+
+  <!-- Tawk.to Live Chat -->
+  <script type="text/javascript">
+  var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+  (function(){
+    var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+    s1.async=true;
+    s1.src='https://embed.tawk.to/123456789/default';  // replace with your Tawk.to property link
+    s1.charset='UTF-8';
+    s1.setAttribute('crossorigin','*');
+    s0.parentNode.insertBefore(s1,s0);
+  })();
+  </script>
 </body>
 </html>
